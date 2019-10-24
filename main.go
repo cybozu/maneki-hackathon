@@ -7,14 +7,18 @@ import (
 	"os"
 )
 
+// main.go indexName
 func main() {
 	es, _ := elasticsearch.NewDefaultClient()
-	indexName := "sample"
-	if res, err := es.Indices.Delete([]string{indexName}); err == nil {
-		buf := new(bytes.Buffer)
-		buf.ReadFrom(res.Body)
-		fmt.Printf("Delete OK: %s\n", buf.String())
+	indexName := os.Args[1]
+	res, err := es.Indices.Delete([]string{indexName})
+	if err != nil {
+		fmt.Printf("error occured %s", err)
+		return
 	}
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(res.Body)
+	fmt.Printf("Delete OK: %s\n", buf.String())
 	if res, err := es.Indices.Create(indexName); err == nil {
 		buf := new(bytes.Buffer)
 		buf.ReadFrom(res.Body)
